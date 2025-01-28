@@ -11,7 +11,7 @@
     "start": "react-scripts start",
     "scripts_build": "react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "npm test -- --coverage --watchAll=false",
+    "test:ci": "npm test -- --coverage --watchAll=false --detectOpenHandles",
     "eject": "react-scripts eject"
   },
   "dependencies": {

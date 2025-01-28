@@ -11,4 +11,8 @@ app.use(bodyParser.json());
 app.use("/posts", postsRouter);
 app.use("/users", usersRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello, world!");
+});
+
 app.listen(5000, () => console.log("Server running on http://localhost:5000"));

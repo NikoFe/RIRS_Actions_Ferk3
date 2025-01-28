@@ -17,6 +17,10 @@ app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
-app.listen(port, () =>
-  console.log("Server running on http://localhost:${port}")
-);
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(port, () =>
+    console.log("Server running on http://localhost:${port}")
+  );
+}

@@ -7,11 +7,10 @@
     "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:ci": "npm test -- --coverage --watchAll=false",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest",
+    "test:ci": "npm test -- --coverage --watchAll=false"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

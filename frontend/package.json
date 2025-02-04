@@ -10,7 +10,7 @@
     "start": "vite",
     "build": "vitest",
     "test": "vitest",
-    "test:ci": "npm test -- --coverage --watchAll=false"
+    "test:ci": "vitest"
   },
   "dependencies": {
     "axios": "^1.7.9",

@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "start": "vite",
     "build": "vitest",
-    "test": "react-scripts test",
+    "test": "vitest",
     "test:ci": "npm test -- --coverage --watchAll=false"
   },
   "dependencies": {

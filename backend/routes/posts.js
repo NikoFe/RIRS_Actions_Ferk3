@@ -17,9 +17,9 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, parts, user_username, concatenated, price } = req.body;
-  console.log(
-    "name: " + name + " parts: " + concatenated + " username: " + user_username
-  );
+  //console.log(
+  //  "name: " + name + " parts: " + concatenated + " username: " + user_username
+  //  );
   const connection = await mysql.createConnection(dbConfig);
   await connection.execute(
     "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
@@ -37,12 +37,13 @@ router.delete("/:name", async (req, res) => {
 });
 
 router.put("/:name", async (req, res) => {
-  const { parts } = req.body;
+  const { parts, price } = req.body;
   const connection = await mysql.createConnection(dbConfig);
-  await connection.execute("UPDATE Post SET parts = ? WHERE name = ?", [
-    parts,
-    req.params.name,
-  ]);
+  console.log("PRICE: ", price);
+  await connection.execute(
+    "UPDATE Post SET parts = ?, price=? WHERE name = ?",
+    [parts, price, req.params.name]
+  );
   res.sendStatus(200);
 });
 

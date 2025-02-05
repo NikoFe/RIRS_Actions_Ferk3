@@ -3,6 +3,8 @@ import axios from "axios";
 import Post from "./Post";
 import Creation from "./Creation";
 import Login from "./Login";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -88,8 +90,14 @@ const App = () => {
         { part: "", price: 0, key: uuidv4() },
       ]);
 
-      // const resultString = JSON.stringify(result);
-      // console.log("Response Data:", resultString);
+      const responseString = JSON.stringify(response.status);
+      console.log("Response Data:", responseString);
+
+      if (responseString == "201") {
+        toast.success("New post successfuly created!");
+      } else {
+        toast.error("Error in creating post!");
+      }
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -124,6 +132,7 @@ const App = () => {
 
   return (
     <div>
+      <ToastContainer position="bottom-right" />
       {user ? (
         <>
           <h1>Welcome, {user.username}</h1>

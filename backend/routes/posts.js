@@ -16,14 +16,14 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, parts, user_username, concatenated } = req.body;
+  const { name, parts, user_username, concatenated, price } = req.body;
   console.log(
     "name: " + name + " parts: " + concatenated + " username: " + user_username
   );
   const connection = await mysql.createConnection(dbConfig);
   await connection.execute(
-    "INSERT INTO Post (name, parts, user_username) VALUES (?, ?, ?)",
-    [name, concatenated, user_username]
+    "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
+    [name, concatenated, user_username, price]
   );
   res.sendStatus(201);
 });

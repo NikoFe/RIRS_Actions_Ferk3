@@ -40,7 +40,10 @@ const Post = ({ post, user, fetchPosts }) => {
         );
       })}
 
-      {}
+      <div>
+        <p>Total price: {post.price}</p>
+      </div>
+
       {user && user.username === post.user_username && (
         <>
           <button onClick={handleUpdate}>Update</button>

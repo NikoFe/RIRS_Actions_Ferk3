@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Post from "./Post";
+import Creation from "./Creation";
+import Login from "./Login";
+
 import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
   const [posts, setPosts] = useState([]);
+  //const [postName, setPostName] = useState([]);
+
   const [user, setUser] = useState(null);
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [newPost, setNewPost] = useState({ name: "", parts: "" });
+  const [price, setPrice] = useState(0.0);
+
   //const [parts, setParts] = useState({ name: "", price: "" });
   const [rows, setRows] = useState([
-    { part: "", price: "", key: uuidv4() },
-    { part: "", price: "", key: uuidv4() },
-    { part: "", price: "", key: uuidv4() },
+    { part: "", price: 0, key: uuidv4() },
+    { part: "", price: 0, key: uuidv4() },
+    { part: "", price: 0, key: uuidv4() },
   ]);
 
   const fetchPosts = async () => {
@@ -22,13 +29,6 @@ const App = () => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
-  };
-
-  const handleChange = (index, field, value) => {
-    const updatedRows = rows.map((row, i) =>
-      i === index ? { ...row, [field]: value } : row
-    );
-    setRows(updatedRows);
   };
 
   const handleLogin = async () => {
@@ -45,14 +45,18 @@ const App = () => {
   };
 
   const handleCreatePost = async () => {
+    for (let i = 0; i < rows.length; i++) {
+      console.log("i: ", i);
+      console.log("PART: ", rows[i].part);
+      console.log("PRICE: ", rows[i].price);
+    }
+
     const isValid = rows.every((row) => row.part && row.price);
     if (!isValid) {
       alert("Please fill out all fields before submitting.");
       return;
     }
-
-    console.log("D part: " + rows[0].part);
-    console.log("E price : " + rows[0].price);
+    //console.log("D part: " + rows[0].part);
 
     const values = rows.map((row) => ({
       part: row.part,
@@ -67,16 +71,25 @@ const App = () => {
         "Part: " + values[i].part + " Price: " + values[i].price + ",";
     }
 
-    const string_values = values.join();
-    console.log("STRING VALUES: ", concatenated);
+    // const string_values = values.join();
 
     try {
-      await axios.post("http://localhost:5000/posts", {
+      const response = await axios.post("http://localhost:5000/posts", {
         ...newPost,
         user_username: user.username,
         concatenated,
+        price,
       });
       fetchPosts();
+
+      setRows([
+        { part: "", price: 0, key: uuidv4() },
+        { part: "", price: 0, key: uuidv4() },
+        { part: "", price: 0, key: uuidv4() },
+      ]);
+
+      // const resultString = JSON.stringify(result);
+      // console.log("Response Data:", resultString);
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -84,84 +97,65 @@ const App = () => {
 
   const handleLogout = () => setUser(null);
 
+  const handleChange = (index, field, value) => {
+    console.log("////////////\n");
+    console.log("field: " + field);
+
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row, i) =>
+        i === index ? { ...row, [field]: value } : row
+      );
+
+      // Calculate sum based on updatedRows
+      const newTotal = updatedRows.reduce(
+        (acc, row) => acc + (parseFloat(row.price) || 0),
+        0
+      );
+
+      setPrice(newTotal);
+
+      return updatedRows;
+    });
+  };
+
   useEffect(() => {
     fetchPosts();
   }, []);
 
   return (
     <div>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-
       {user ? (
         <>
           <h1>Welcome, {user.username}</h1>
           <button onClick={handleLogout}>Logout</button>
-          <h2>Create Post</h2>
-          <input
-            placeholder="Post Name"
-            value={newPost.name}
-            onChange={(e) => setNewPost({ ...newPost, name: e.target.value })}
+
+          <Creation
+            newPost={newPost}
+            setNewPost={setNewPost}
+            rows={rows}
+            handleChange={handleChange}
+            handleCreatePost={handleCreatePost}
+            setPice={setPrice}
+            price={price}
           />
 
-          {/*
-          <input
-            placeholder="Price"
-            onChange={(e) => setNewPost({ ...newPost, parts: e.target.value })}
-          />
-           */}
-          <div className="rows">
-            {rows.map((row, index) => (
-              <div className="row" key={row}>
-                <input
-                  type="text"
-                  placeholder="Computer Part"
-                  //value={part}
-                  onChange={(e) => handleChange(index, "part", e.target.value)}
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  //value={price}
-                  onChange={(e) => handleChange(index, "price", e.target.value)}
-                />
-              </div>
-            ))}
-          </div>
-          <button onClick={handleCreatePost}>Create Post</button>
+          <h2>Posts:</h2>
+          {posts.map((post) => (
+            <Post
+              key={post.name}
+              post={post}
+              user={user}
+              fetchPosts={fetchPosts}
+            />
+          ))}
         </>
       ) : (
-        <>
-          <h1>Login</h1>
-          <input
-            placeholder="Username"
-            value={loginForm.username}
-            onChange={(e) =>
-              setLoginForm({ ...loginForm, username: e.target.value })
-            }
-          />
-          <input
-            placeholder="Password"
-            type="password"
-            value={loginForm.password}
-            onChange={(e) =>
-              setLoginForm({ ...loginForm, password: e.target.value })
-            }
-          />
-          <button onClick={handleLogin}>Login</button>
-        </>
+        <Login
+          loginForm={loginForm}
+          setLoginForm={setLoginForm}
+          handleLogin={handleLogin}
+        ></Login>
       )}
-
-      <h2>Posts:</h2>
-      {posts.map((post) => (
-        <Post key={post.name} post={post} user={user} fetchPosts={fetchPosts} />
-      ))}
     </div>
   );
 };

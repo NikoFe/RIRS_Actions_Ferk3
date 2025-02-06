@@ -16,16 +16,24 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, parts, user_username, concatenated, price } = req.body;
-  //console.log(
-  //  "name: " + name + " parts: " + concatenated + " username: " + user_username
-  //  );
-  const connection = await mysql.createConnection(dbConfig);
-  await connection.execute(
-    "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
-    [name, concatenated, user_username, price]
-  );
-  res.sendStatus(201);
+  try {
+    const { name, parts, user_username, price } = req.body;
+
+    // Validate request body to ensure no missing values
+    if (!name || !parts || !user_username || !price) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const connection = await mysql.createConnection(dbConfig);
+    await connection.execute(
+      "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
+      [name, parts, user_username, price]
+    );
+    res.sendStatus(201);
+  } catch (error) {
+    console.error("Error inserting post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.delete("/:name", async (req, res) => {

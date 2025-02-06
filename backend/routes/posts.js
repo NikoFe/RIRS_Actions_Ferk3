@@ -10,9 +10,28 @@ const dbConfig = {
 };
 
 router.get("/", async (req, res) => {
-  const connection = await mysql.createConnection(dbConfig);
-  const [rows] = await connection.execute("SELECT * FROM Post");
-  res.json(rows);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute("SELECT * FROM Post");
+    res.json(rows);
+  } catch (error) {
+    console.error("Error inserting post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/:name", async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute(
+      "SELECT * FROM Post WHERE name = ?",
+      [req.params.name]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("Error inserting post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -25,10 +44,14 @@ router.post("/", async (req, res) => {
     }
 
     const connection = await mysql.createConnection(dbConfig);
-    await connection.execute(
+    const [result] = await connection.execute(
       "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
       [name, parts, user_username, price]
     );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
     res.sendStatus(201);
   } catch (error) {
     console.error("Error inserting post:", error);
@@ -37,22 +60,44 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:name", async (req, res) => {
-  const connection = await mysql.createConnection(dbConfig);
-  await connection.execute("DELETE FROM Post WHERE name = ?", [
-    req.params.name,
-  ]);
-  res.sendStatus(200);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [result] = await connection.execute(
+      "DELETE FROM Post WHERE name = ?",
+      [req.params.name]
+    );
+    await connection.end(); // Close DB connection
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 router.put("/:name", async (req, res) => {
-  const { parts, price } = req.body;
-  const connection = await mysql.createConnection(dbConfig);
-  console.log("PRICE: ", price);
-  await connection.execute(
-    "UPDATE Post SET parts = ?, price=? WHERE name = ?",
-    [parts, price, req.params.name]
-  );
-  res.sendStatus(200);
+  try {
+    const { parts, price } = req.body;
+    const connection = await mysql.createConnection(dbConfig);
+    console.log("PRICE: ", price);
+    const [result] = await connection.execute(
+      "UPDATE Post SET parts = ?, price=? WHERE name = ?",
+      [parts, price]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 module.exports = router;

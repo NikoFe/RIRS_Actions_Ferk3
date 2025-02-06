@@ -9,6 +9,17 @@ const dbConfig = {
   database: "express",
 };
 
+router.get("/", async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute("SELECT * FROM User");
+    res.json(rows);
+  } catch (error) {
+    console.error("Error getting users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const connection = await mysql.createConnection(dbConfig);

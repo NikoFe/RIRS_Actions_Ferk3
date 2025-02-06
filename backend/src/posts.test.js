@@ -61,10 +61,11 @@ describe("POSTS API", () => {
       expect(mockConnection.execute).toHaveBeenCalledWith("SELECT * FROM Post");
     });
   });
+  //////////////////////////////////////////////////////////////////////////
 
   describe("POST /posts", () => {
     it("should create a new post", async () => {
-      const newPost = {
+      const newData = {
         name: "A5",
         parts: "Part: a11 Price: 5,Part: a12 Price: 7,Part: a13 Price: 3,",
         user_username: "a",
@@ -73,12 +74,12 @@ describe("POSTS API", () => {
 
       mockConnection.execute.mockResolvedValue([{ affectedRows: 1 }]);
 
-      const response = await request(app).post("/posts").send(newPost);
+      const response = await request(app).post("/posts").send(newData);
 
       expect(response.statusCode).toBe(201);
       expect(mockConnection.execute).toHaveBeenCalledWith(
         "INSERT INTO Post (name, parts, user_username, price) VALUES (?, ?, ?, ?)",
-        [newPost.name, newPost.parts, newPost.user_username, newPost.price]
+        [newData.name, newData.parts, newData.user_username, newData.price]
       );
     });
 
@@ -88,6 +89,104 @@ describe("POSTS API", () => {
       const response = await request(app).post("/posts").send(invalidPost);
 
       expect(response.statusCode).toBe(400);
+    });
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  describe("GET /posts?name", () => {
+    it("should return the post with the specified name", async () => {
+      const mockPosts = [
+        {
+          name: "A1",
+          parts: "Part: a11 Price: 5,Part: a12 Price: 7,Part: a13 Price: 3,",
+          user_username: "a",
+          id: 32,
+          price: "15.00",
+        },
+      ];
+
+      mockConnection.execute.mockResolvedValue([mockPosts]);
+
+      const postName = "A1"; // Name of the post to delete
+
+      const response = await request(app).get(`/posts/${postName}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toEqual(mockPosts);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        "SELECT * FROM Post WHERE name = ?",
+        [postName]
+      );
+    });
+  });
+
+  ///////////////////////////////////////////7
+
+  describe("POST /delete", () => {
+    it("should delete a specific post", async () => {
+      mockConnection.execute.mockResolvedValue([{ affectedRows: 1 }]);
+
+      const postName = "SamplePost"; // Name of the post to delete
+
+      const response = await request(app).delete(`/posts/${postName}`);
+
+      expect(response.statusCode).toBe(200);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        "DELETE FROM Post WHERE name = ?",
+        [postName] // Correctly passing the hardcoded name
+      );
+    });
+
+    it("should return 404 if post is not found", async () => {
+      mockConnection.execute.mockResolvedValue([{ affectedRows: 0 }]); // Simulate no rows deleted
+
+      const postName = "NonExistentPost";
+
+      const response = await request(app).delete(`/posts/${postName}`);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toEqual({ error: "Post not found" });
+    });
+  });
+  ////////////////////////////////////////////////////////////////////////////////
+
+  describe("POST /updated", () => {
+    it("should update a specific post", async () => {
+      const newData = {
+        parts: "Part: a11 Price: 5,Part: a12 Price: 7,Part: a13 Price: 3,",
+        price: "100.00",
+      };
+
+      mockConnection.execute.mockResolvedValue([{ affectedRows: 1 }]);
+
+      const postName = "SamplePost"; // Name of the post to delete
+
+      const response = await request(app)
+        .put(`/posts/${postName}`)
+        .send(newData);
+
+      expect(response.statusCode).toBe(200);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        "UPDATE Post SET parts = ?, price=? WHERE name = ?",
+        [newData.parts, newData.price]
+      );
+    });
+
+    it("should return 404 if post is not found", async () => {
+      const newData = {
+        parts: "Part: a11 Price: 5,Part: a12 Price: 7,Part: a13 Price: 3,",
+        price: "100.00",
+      };
+
+      mockConnection.execute.mockResolvedValue([{ affectedRows: 0 }]); // Simulate no rows deleted
+
+      const postName = "NonExistentPost";
+
+      const response = await request(app).put(`/posts/${postName}`);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toEqual({ error: "Post not found" });
     });
   });
 });

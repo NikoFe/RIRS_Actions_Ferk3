@@ -88,9 +88,13 @@ const Post = ({ post, user, fetchPosts }) => {
   let splitText = post.parts.split(",");
 
   return (
-    <div>
+    <div className="Post-div" data-testid="Post-div">
       <ToastContainer position="bottom-right" />
-      <h3>{post.name}</h3>
+      <div className="posts-top-div">
+        <h3>{post.name}</h3>
+        <strong data-testid="uploader">Posted by: {user.username}</strong>
+      </div>
+
       {/*<p>Parts: {post.parts.replace(",", "\n")}</p>*/}
 
       {splitText.map((row) => {
@@ -102,13 +106,17 @@ const Post = ({ post, user, fetchPosts }) => {
       })}
 
       <div>
-        <p>Total price: {post.price}</p>
+        <p data-testid="total_price_post">Total price: {post.price}</p>
       </div>
 
       {user && user.username === post.user_username && (
         <>
-          <button onClick={handleUpdate}>Update</button>
-          <button onClick={handleDelete}>Delete</button>
+          <button onClick={handleUpdate} data-testid="update_button">
+            Update
+          </button>
+          <button onClick={handleDelete} data-testid="delete_button">
+            Delete
+          </button>
         </>
       )}
     </div>

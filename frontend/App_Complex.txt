@@ -1,0 +1,44 @@
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import axios from "axios";
+import Post from "../Post";  // Import the Post component
+import { describe, test, expect, it , vi} from "vitest"; // ✅ Use Vitest functions explicitly
+import "@testing-library/jest-dom"; // <-- ADD THIS LINE
+import userEvent from "@testing-library/event";
+import "testing-library/jest-dom/vitest";
+
+
+
+
+vi.mock("axios"); // Mock axios
+
+describe("Post Component", () => {
+  const mockPost = { name: "Test Post", title: "Sample Title" };
+  const mockFetchPosts = vi.fn(); // Mock fetchPosts function
+
+  test("deletes a post and updates UI", async () => {
+    axios.delete.mockResolvedValue({ status: 200 });
+
+    render(<Post post={mockPost} fetchPosts={mockFetchPosts} />);
+
+    // Ensure the post is initially in the document
+    expect(screen.getByText(mockPost.title)).toBeInTheDocument();
+
+    // Click delete button
+    fireEvent.click(screen.getByText("Delete"));
+
+    // Ensure delete API was called with the correct URL
+    await waitFor(() => {
+      expect(axios.delete).toHaveBeenCalledWith(
+        `http://localhost:5000/posts/${mockPost.name}`
+      );
+    });
+
+    // Ensure fetchPosts is called to refresh UI
+    await waitFor(() => {
+      expect(mockFetchPosts).toHaveBeenCalled();
+    });
+
+    // Optionally, check toast notification (if using `react-toastify`)
+    // expect(screen.getByText("Post successfully deleted!")).toBeInTheDocument();
+  });
+});

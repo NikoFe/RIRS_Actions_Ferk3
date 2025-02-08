@@ -3,3 +3,18 @@
   max-height: 200px;
   margin-left: 0px;
 }
+.Post-div {
+  background-color: lightgray;
+}
+
+.Login-div {
+  background-color: lightblue;
+}
+.posts-top-div {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  align-items: center;
+  padding-left: 5px;
+  padding-right: 15px;
+}

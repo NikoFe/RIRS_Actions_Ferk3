@@ -77,10 +77,12 @@ test("3. logging out removes welcome message", async () => {
   expect(await screen.findByTestId("welcome_header")).toHaveTextContent(
     "Welcome, testUser"
   );
+
   // Click the logout button
   await userEvent.click(screen.getByText("Logout"));
   // Ensure welcome message disappears
   expect(screen.queryByTestId("welcome_header")).not.toBeInTheDocument();
+
   // Ensure login screen is shown again
   expect(screen.getByPlaceholderText("Username")).toBeInTheDocument();
   expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
@@ -92,14 +94,20 @@ test("4. deleting a post removes it from the UI", async () => {
     price: 100,
     user_username: "testUser",
   };
+
   const mockUser = { username: "testUser" };
+
   // Mock delete request
   axios.delete.mockResolvedValue({ status: 200 });
+
   render(<Post post={mockPost} user={mockUser} fetchPosts={vi.fn()} />);
+
   // Ensure post is displayed
   expect(screen.getByText("Test_Post")).toBeInTheDocument();
+
   // Click delete button
   await userEvent.click(screen.getByText("Delete"));
+
   // Expect axios.delete to be called with correct endpoint
   expect(axios.delete).toHaveBeenCalledWith(
     `http://localhost:5000/posts/Test_Post`
@@ -111,49 +119,83 @@ test("5. logging out hides posts and shows login form", async () => {
   axios.get.mockResolvedValue({
     data: [{ name: "Test Post", parts: "CPU, GPU", price: 100 }],
   });
+
   render(<App />);
+
   await loginUser();
+  // Simulate login
+  //await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
+  // await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
+  // await userEvent.click(screen.getByTestId("login_button"));
+
+  // Wait for welcome message
   expect(await screen.findByTestId("welcome_header")).toHaveTextContent(
     "Welcome, testUser"
   );
+
   // Confirm that posts are displayed
   expect(await screen.findByText("Test Post")).toBeInTheDocument();
+
   // Click logout button
   await userEvent.click(screen.getByText("Logout"));
+
   // Ensure posts are hidden
   expect(screen.queryByText("Test Post")).not.toBeInTheDocument();
+
   // Ensure login form is shown again
   expect(screen.getByPlaceholderText("Username")).toBeInTheDocument();
   expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
 });
+
 test("6. total price updates when part prices are changed", async () => {
   const mockUser = { username: "testUser" };
   axios.post.mockResolvedValue({ data: { user: mockUser } });
   axios.get.mockResolvedValue({ data: [] });
+
   render(<App />);
+
   await loginUser();
+
+  // Simulate login
+  // await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
+  //  await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
+  // await userEvent.click(screen.getByTestId("login_button"));
+
+  // Select the first "Price" input field
   const priceInputs = screen.getAllByPlaceholderText("Price");
+
   // Change price values
   await userEvent.type(priceInputs[0], "50");
   await userEvent.type(priceInputs[1], "100");
+
   // Check that the total price updates correctly
   expect(await screen.findByText(/Total price: 150/i)).toBeInTheDocument();
 });
 
 test("7. creating a post with empty fields shows an alert", async () => {
   const mockUser = { username: "testUser" };
+
   // Mock login
   axios.post.mockResolvedValue({ data: { user: mockUser } });
   axios.get.mockResolvedValueOnce({ data: [] });
+
   render(<App />);
+
   await loginUser();
   // Simulate login
+  //await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
+  // await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
+  //await userEvent.click(screen.getByTestId("login_button"));
+
+  // Wait for login
   expect(await screen.findByTestId("welcome_header")).toHaveTextContent(
     "Welcome, testUser"
   );
+
   // Try to submit an empty post
   window.alert = vi.fn(); // Mock alert
   await userEvent.click(screen.getByTestId("creation_button"));
+
   // Expect alert to be triggered
   expect(window.alert).toHaveBeenCalledWith(
     "Please fill out all fields before submitting."
@@ -162,6 +204,7 @@ test("7. creating a post with empty fields shows an alert", async () => {
 
 test("8. deleting a post removes it from the UI", async () => {
   render(<App />);
+
   const mockUser = { username: "testUser" };
   // Mock login and initial post
   axios.post.mockResolvedValue({ data: { user: mockUser } });
@@ -176,9 +219,15 @@ test("8. deleting a post removes it from the UI", async () => {
         },
       ],
     })
+
     .mockResolvedValueOnce({ data: [] }); // After deletion
   axios.delete.mockResolvedValue({ status: 200 });
+
   await loginUser();
+  // Simulate login
+  // await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
+  // await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
+  //await userEvent.click(screen.getByTestId("login_button"));
   //create post
   const priceInputs = screen.getAllByPlaceholderText("Price");
   // Change price values
@@ -187,7 +236,9 @@ test("8. deleting a post removes it from the UI", async () => {
   const partsInputs = screen.getAllByPlaceholderText("Computer Part");
   await userEvent.type(partsInputs[0], "op1");
   await userEvent.type(partsInputs[1], "op2");
+
   await userEvent.type(screen.getByPlaceholderText("Post Name"), "Old_Post");
+
   await userEvent.click(screen.getByTestId("creation_button"));
   // Wait for post to load
   expect(await screen.findByText("Old_Post")).toBeInTheDocument();
@@ -201,6 +252,7 @@ test("8. deleting a post removes it from the UI", async () => {
 
 test("9. Creating a post shows the correct total price", async () => {
   render(<App />);
+
   const mockUser = { username: "testUser" };
   // Mock login and initial post
   axios.post.mockResolvedValue({ data: { user: mockUser } });
@@ -216,21 +268,30 @@ test("9. Creating a post shows the correct total price", async () => {
         },
       ],
     })
+
     .mockResolvedValueOnce({ data: [] }); // After deletion
+
   axios.delete.mockResolvedValue({ status: 200 });
+
   await loginUser();
   // Simulate login
+  // await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
+  // await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
+  // await userEvent.click(screen.getByTestId("login_button"));
+
   await waitFor(() => {
     expect(screen.getAllByTestId("total_price_post")[0]).toHaveTextContent(
       `Total price: 15.00`
     );
   });
 });
+
 test("10.Updating post updates the total price", async () => {
   render(<App />);
 
   const mockUser = { username: "testUser" };
   axios.post.mockResolvedValue({ data: { user: mockUser } });
+
   axios.get
     .mockResolvedValueOnce({
       data: [
@@ -243,6 +304,7 @@ test("10.Updating post updates the total price", async () => {
         },
       ],
     }) // Initial post
+
     .mockResolvedValueOnce({
       data: [
         {
@@ -254,6 +316,7 @@ test("10.Updating post updates the total price", async () => {
         },
       ],
     }); // After update
+
   axios.put.mockResolvedValueOnce({
     data: [
       {
@@ -265,17 +328,22 @@ test("10.Updating post updates the total price", async () => {
       },
     ],
   }); // Initial post
+
   await loginUser();
   //await userEvent.type(screen.getByPlaceholderText("Username"), "testUser");
   //await userEvent.type(screen.getByPlaceholderText("Password"), "testPass");
   //await userEvent.click(screen.getByTestId("login_button"));
+
   await userEvent.click(screen.getByTestId("update_button"));
+
   window.prompt = vi
     .fn()
     .mockReturnValue(
       "Part: a11 Price: 50,Part: a12 Price: 70,Part: a13 Price: 30"
     );
+
   await userEvent.click(screen.getByTestId("update_button")); // ✅ Click again to trigger update
+
   await waitFor(() => {
     screen.debug(); // ✅ Print UI after update
     expect(screen.getByTestId("total_price_post")).toHaveTextContent(

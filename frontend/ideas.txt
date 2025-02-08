@@ -1,0 +1,21 @@
+
+//APP
+
+//Check if logout and create buttons exist
+
+//update price after changing the value of components
+//after successfully creating check that all the values are empty or 0
+//Check if toast appears after succesfully creating
+//Fields not changed when not successfuly creating
+//Check that alert appears after not successfuly creating
+//Check if an alert with all the existing values in updating
+//Check if all the post elements which don't have options aren't from user
+
+//Check if logout and create buttons exist
+//Check if submit field exists with all the inputs
+
+//login funckionalnost za drugi del:
+//Check if the login component only appears after logout
+//if fields in login are empty login does not pass
+
+//Welcome on top should show user name

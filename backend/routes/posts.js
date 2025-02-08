@@ -36,10 +36,16 @@ router.get("/:name", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log("CREATING POST");
     const { name, parts, user_username, price } = req.body;
 
     // Validate request body to ensure no missing values
     if (!name || !parts || !user_username || !price) {
+      console.log("MISSING fields");
+      console.log("name: " + name);
+      console.log("parts: " + parts);
+      console.log("user_username: " + user_username);
+      console.log("price: " + price);
       return res.status(400).json({ error: "Missing required fields" });
     }
 

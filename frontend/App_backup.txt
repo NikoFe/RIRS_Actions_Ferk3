@@ -1,8 +1,15 @@
+Here are 3 components of my REACT application, write me 3 simple unit tests for the REACT application using vitest and testing-library
+
+
+App.jsx:
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Post from "./Post";
 import Creation from "./Creation";
 import Login from "./Login";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -72,13 +79,16 @@ const App = () => {
     }
 
     // const string_values = values.join();
+    console.log("user_username: ", user.username);
+    console.log("concatenated: ", concatenated);
+    console.log("price: ", price);
 
     try {
       const response = await axios.post("http://localhost:5000/posts", {
         ...newPost,
         user_username: user.username,
-        concatenated,
-        price,
+        parts: concatenated,
+        price: price,
       });
       fetchPosts();
 
@@ -88,8 +98,14 @@ const App = () => {
         { part: "", price: 0, key: uuidv4() },
       ]);
 
-      // const resultString = JSON.stringify(result);
-      // console.log("Response Data:", resultString);
+      const responseString = JSON.stringify(response.status);
+      console.log("Response Data:", responseString);
+
+      if (responseString == "201") {
+        toast.success("New post successfuly created!");
+      } else {
+        toast.error("Error in creating post!");
+      }
     } catch (error) {
       console.error("Error creating post:", error);
     }
@@ -124,9 +140,10 @@ const App = () => {
 
   return (
     <div>
+      <ToastContainer position="bottom-right" />
       {user ? (
         <>
-          <h1>Welcome, {user.username}</h1>
+          <h1 data-testid="welcome_header">Welcome, {user.username}</h1>
           <button onClick={handleLogout}>Logout</button>
 
           <Creation
@@ -161,3 +178,163 @@ const App = () => {
 };
 
 export default App;
+
+Login.jsx:
+
+import React from "react";
+
+export default function Login({ loginForm, setLoginForm, handleLogin }) {
+  return (
+    <>
+      <div className="Login-div">
+        <h1>Login</h1>
+        <input
+          placeholder="Username"
+          value={loginForm.username}
+          onChange={(e) =>
+            setLoginForm({ ...loginForm, username: e.target.value })
+          }
+        />
+        <input
+          placeholder="Password"
+          type="password"
+          value={loginForm.password}
+          onChange={(e) =>
+            setLoginForm({ ...loginForm, password: e.target.value })
+          }
+        />
+        <button onClick={handleLogin} data-testid="login_button">
+          Login
+        </button>
+      </div>
+    </>
+  );
+}
+
+
+Post.jsx:
+
+import React from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const Post = ({ post, user, fetchPosts }) => {
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/posts/${post.name}`
+      );
+      fetchPosts();
+
+      const responseString = JSON.stringify(response.status);
+      console.log("Response DELETE Data:", responseString);
+
+      if (
+        responseString == "201" ||
+        responseString == "200" ||
+        responseString == "202"
+      ) {
+        console.log("Got here!");
+        toast.success("Post successfuly deleted!");
+      } else {
+        toast.error("Error in deleting post!");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  const extractPrices = (str) => {
+    const regex = /Price:\s(\d+)/g;
+    let prices = [];
+    let match;
+
+    while ((match = regex.exec(str)) !== null) {
+      prices.push(match[1]);
+    }
+
+    return prices;
+  };
+
+  const handleUpdate = async () => {
+    const newParts = prompt("Enter new parts (comma-separated):", post.parts);
+
+    let sum = 0.0;
+
+    const prices = extractPrices(newParts);
+
+    for (let i = 0; i < prices.length; i++) {
+      console.log("PARTS for sum: ", prices[i]);
+
+      sum += parseFloat(prices[i]);
+    }
+    console.log("NEW PRICE: ", sum);
+
+    if (newParts) {
+      try {
+        const response = await axios.put(
+          `http://localhost:5000/posts/${post.name}`,
+          {
+            parts: newParts,
+            price: sum,
+          }
+        );
+
+        const responseString = JSON.stringify(response.status);
+        console.log("Response Data:", responseString);
+
+        if (
+          responseString == "201" ||
+          responseString == "200" ||
+          responseString == "202"
+        ) {
+          toast.success("Post successfuly updated!");
+        } else {
+          toast.error("Error in updating post!");
+        }
+
+        fetchPosts();
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    }
+  };
+
+  let splitText = post.parts.split(",");
+
+  return (
+    <div className="Post-div" data-testid="Post-div">
+      <ToastContainer position="bottom-right" />
+      <div className="posts-top-div">
+        <h3>{post.name}</h3>
+        <strong data-testid="uploader">Posted by: {user.username}</strong>
+      </div>
+
+      {/*<p>Parts: {post.parts.replace(",", "\n")}</p>*/}
+
+      {splitText.map((row) => {
+        return (
+          <div>
+            <p>{row}</p>
+          </div>
+        );
+      })}
+
+      <div>
+        <p>Total price: {post.price}</p>
+      </div>
+
+      {user && user.username === post.user_username && (
+        <>
+          <button onClick={handleUpdate}>Update</button>
+          <button onClick={handleDelete}>Delete</button>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Post;
+
+

@@ -41,10 +41,12 @@ export default function Creation({
         ))}
 
         <div>
-          <p> Total price: {price}</p>
+          <p data-testid="total_price"> Total price: {price}</p>
         </div>
       </div>
-      <button onClick={handleCreatePost}>Create Post</button>
+      <button onClick={handleCreatePost} data-testid="creation_button">
+        Create Post
+      </button>
     </div>
   );
 }

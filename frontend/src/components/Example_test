@@ -1,0 +1,15 @@
+test("renders the learn react link", async () => {
+  render(<App name={"Pedro"} />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(screen.getByText("Hello World")).toBeInTheDocument();
+  expect(linkElement).toBeInTheDocument();
+
+  const button = screen.getByRole("button", { name: /increment/i });
+  const counterValue = screen.getByTestId("counter-value"); // <p data-testid="counter-value">
+
+  expect(counterValue, tetContnet).toEqual("0");
+
+  await userEvent.click(button); //after the user clicks the button
+
+  expect(counterValue, tetContnet).toEqual("1");
+});

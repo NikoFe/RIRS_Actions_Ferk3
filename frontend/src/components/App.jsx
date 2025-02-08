@@ -74,13 +74,16 @@ const App = () => {
     }
 
     // const string_values = values.join();
+    console.log("user_username: ", user.username);
+    console.log("concatenated: ", concatenated);
+    console.log("price: ", price);
 
     try {
       const response = await axios.post("http://localhost:5000/posts", {
         ...newPost,
         user_username: user.username,
-        concatenated,
-        price,
+        parts: concatenated,
+        price: price,
       });
       fetchPosts();
 
@@ -135,7 +138,7 @@ const App = () => {
       <ToastContainer position="bottom-right" />
       {user ? (
         <>
-          <h1>Welcome, {user.username}</h1>
+          <h1 data-testid="welcome_header">Welcome, {user.username}</h1>
           <button onClick={handleLogout}>Logout</button>
 
           <Creation

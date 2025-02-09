@@ -64,6 +64,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json # ✅ Specify correct path
 
       - name: Cache node_modules # Caching odvisnosti
         uses: actions/cache@v3

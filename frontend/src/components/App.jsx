@@ -16,6 +16,10 @@ const App = () => {
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [newPost, setNewPost] = useState({ name: "", parts: "" });
   const [price, setPrice] = useState(0.0);
+  const [tempFilter, setTempFilter] = useState(0.0);
+  const [filter, setFilter] = useState(0.0);
+  const [tempUFilter, setTempUFilter] = useState("");
+  const [UFilter, setUFilter] = useState("");
 
   //const [parts, setParts] = useState({ name: "", price: "" });
   const [rows, setRows] = useState([
@@ -141,6 +145,43 @@ const App = () => {
           <h1 data-testid="welcome_header">Welcome, {user.username}</h1>
           <button onClick={handleLogout}>Logout</button>
 
+          <div>
+            <input
+              className="filtered"
+              data-testid="filtered_input"
+              min="0"
+              max="1000"
+              type="number"
+              placeholder="Filtered_Price"
+              step="any"
+              onChange={(e) => handleChange(setTempFilter(e.target.value))}
+            />
+            <button
+              data-testid="filter-button"
+              onClick={() => {
+                setFilter(tempFilter);
+              }}
+            >
+              Filter
+            </button>
+            <input
+              className="filteredUser"
+              data-testid="filtered_user_input"
+              min="0"
+              max="1000"
+              type="text"
+              placeholder="Filtered_User"
+              onChange={(e) => handleChange(setTempUFilter(e.target.value))}
+            />
+            <button
+              data-testid="filter-user-button"
+              onClick={() => {
+                setUFilter(tempUFilter);
+              }}
+            >
+              Filter
+            </button>
+          </div>
           <Creation
             newPost={newPost}
             setNewPost={setNewPost}
@@ -152,14 +193,18 @@ const App = () => {
           />
 
           <h2>Posts:</h2>
-          {posts.map((post) => (
-            <Post
-              key={post.name}
-              post={post}
-              user={user}
-              fetchPosts={fetchPosts}
-            />
-          ))}
+          {posts.map(
+            (post) =>
+              Number(post.price) > Number(filter) &&
+              (post.user_username == UFilter || UFilter == "") && (
+                <Post
+                  key={post.name}
+                  post={post}
+                  user={user}
+                  fetchPosts={fetchPosts}
+                />
+              )
+          )}
         </>
       ) : (
         <Login

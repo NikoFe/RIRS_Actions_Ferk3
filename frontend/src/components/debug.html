@@ -13,6 +13,27 @@
         <h1 data-testid="welcome_header">Welcome, testUser</h1>
         <button>Logout</button>
         <div>
+          <input
+            class="filtered"
+            data-testid="filtered_input"
+            max="1000"
+            min="0"
+            placeholder="Filtered_Price"
+            step="any"
+            type="number"
+          />
+          <button data-testid="filter-button">Filter</button>
+          <input
+            class="filteredUser"
+            data-testid="filtered_user_input"
+            max="1000"
+            min="0"
+            placeholder="Filtered_User"
+            type="text"
+          />
+          <button data-testid="filter-user-button">Filter</button>
+        </div>
+        <div>
           <h2>Create Post</h2>
           <input class="name_input" placeholder="Post Name" value="" />
           <div class="create_rows">
@@ -90,4 +111,3 @@
     </div>
   </body>
 </html>
-...

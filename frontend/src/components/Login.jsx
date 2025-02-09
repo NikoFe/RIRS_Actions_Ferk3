@@ -6,6 +6,7 @@ export default function Login({ loginForm, setLoginForm, handleLogin }) {
       <div className="Login-div">
         <h1>Login</h1>
         <input
+          data-testid="login_username2"
           placeholder="Username"
           value={loginForm.username}
           onChange={(e) =>
@@ -13,6 +14,7 @@ export default function Login({ loginForm, setLoginForm, handleLogin }) {
           }
         />
         <input
+          data-testid="login_password2"
           placeholder="Password"
           type="password"
           value={loginForm.password}

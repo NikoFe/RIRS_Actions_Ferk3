@@ -87,7 +87,6 @@ describe("price filter test", () => {
     // Click the filter button
 
     await userEvent.click(screen.getByTestId("filter-button"));
-    screen.debug();
     // Check if the filtered result is displayed
     const totalPriceElement = await screen.queryByText("Total price: 15.00");
     expect(totalPriceElement).not.toBeInTheDocument();

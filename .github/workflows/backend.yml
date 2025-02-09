@@ -23,17 +23,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          cache: "npm" # Auto-caches
+      #  - name: Cache node_modules # Caching odvisnosti
+      #    uses: actions/cache@v3
+      #    with:
+      #     path: backend/node_modules # Pot do mape node_modules
+      #     key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.#json') }} # Ključ za cache
+      #      restore-keys: |
+      #         ${{ runner.os }}-backend-
 
-      - name: Cache node_modules # Caching odvisnosti
-        uses: actions/cache@v3
-        with:
-          path: backend/node_modules # Pot do mape node_modules
-          key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }} # Ključ za cache
-          restore-keys: |
-            ${{ runner.os }}-backend-
-        # ⚠️ Caching:
-        # - Če cache obstaja (cache hit), se node_modules obnovi, preden se zažene npm install.
-        # - Če cache ne obstaja (cache miss), npm install ponovno ustvari mapo node_modules.
+      # ⚠️ Caching:
+      # - Če cache obstaja (cache hit), se node_modules obnovi, preden se zažene npm install.
+      # - Če cache ne obstaja (cache miss), npm install ponovno ustvari mapo node_modules.
 
       - name: Install dependencies # Namestitev odvisnosti
         run: |

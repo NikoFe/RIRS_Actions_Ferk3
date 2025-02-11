@@ -8,7 +8,7 @@ import { loginUser } from "./testUtils";
 
 vi.mock("axios");
 
-describe.skip("price filter test", () => {
+describe("price filter test", () => {
   it("filters posts correctly after login", async () => {
     // Mock API responses
     const mockUser = { username: "testUser" };
@@ -131,7 +131,7 @@ describe.skip("price filter test", () => {
   });
 });
 
-describe.skip("user filter test", () => {
+describe("user filter test", () => {
   it("filters posts correctly after login", async () => {
     // Mock API responses
     const mockUser = { username: "b" };
@@ -181,7 +181,7 @@ describe.skip("user filter test", () => {
   ////////////////////////////////////////////////////////////////////////
 });
 
-describe.skip("combined filter test", () => {
+describe("combined filter test", () => {
   it("filters posts correctly after login", async () => {
     // Mock API responses
     const mockUser = { username: "b" };

@@ -10,8 +10,9 @@ import { v4 as uuidv4 } from "uuid";
 
 const App = () => {
   const [posts, setPosts] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
+  const [userAverage, setUserAverage] = useState(0.0);
   //const [postName, setPostName] = useState([]);
-
   const [user, setUser] = useState(null);
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [newPost, setNewPost] = useState({ name: "", parts: "" });
@@ -20,6 +21,7 @@ const App = () => {
   const [filter, setFilter] = useState(0.0);
   const [tempUFilter, setTempUFilter] = useState("");
   const [UFilter, setUFilter] = useState("");
+  const [averageError, setAverageError] = useState(false);
 
   //const [parts, setParts] = useState({ name: "", price: "" });
   const [rows, setRows] = useState([
@@ -133,9 +135,57 @@ const App = () => {
     });
   };
 
+  const extractPrices = (str) => {
+    const regex = /Price:\s(\d+)/g;
+    let prices = [];
+    let match;
+
+    while ((match = regex.exec(str)) !== null) {
+      prices.push(match[1]);
+    }
+
+    return prices;
+  };
+
+  const getAverage = async () => {
+    let calculated = 0.0;
+
+    posts.forEach((post) => {
+      if (post.user_username === selectedUser) {
+        let sum = 0.0;
+
+        const newParts = post.parts;
+        const stringParts = newParts.toString();
+        const prices = extractPrices(stringParts);
+
+        prices.forEach((price) => {
+          sum += parseFloat(price);
+        });
+
+        calculated += sum;
+      }
+    });
+    if (calculated == 0.0 && selectedUser != "") {
+      setAverageError("Error user not found");
+    }
+    return calculated;
+  };
+
+  const fetchAverage = async () => {
+    let calculatedAverage = await getAverage(); // Await the promise
+    setUserAverage(calculatedAverage); // Set state with resolved value
+  };
+
   useEffect(() => {
     fetchPosts();
   }, []);
+  useEffect(() => {
+    fetchAverage(); // Call the async function
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (selectedUser) fetchAverage(); // Call the async function
+  }, [selectedUser]);
 
   return (
     <div>
@@ -144,6 +194,24 @@ const App = () => {
         <>
           <h1 data-testid="welcome_header">Welcome, {user.username}</h1>
           <button onClick={handleLogout}>Logout</button>
+
+          <div className="average-div">
+            <p>Average computer price for user:</p>
+            <input
+              className="selectedUser"
+              data-testid="selectedUser"
+              type="text"
+              placeholder=""
+              onChange={(e) => handleChange(setSelectedUser(e.target.value))}
+            />
+            <p data-testid="user-average">: {parseFloat(userAverage)}</p>
+
+            {averageError && (
+              <p className="average-not-found" data-testid="average-not-found">
+                {averageError}
+              </p>
+            )}
+          </div>
 
           <div>
             <input
@@ -167,8 +235,6 @@ const App = () => {
             <input
               className="filteredUser"
               data-testid="filtered_user_input"
-              min="0"
-              max="1000"
               type="text"
               placeholder="Filtered_User"
               onChange={(e) => handleChange(setTempUFilter(e.target.value))}

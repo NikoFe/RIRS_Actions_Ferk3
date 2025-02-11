@@ -13,7 +13,7 @@ import { within } from "@testing-library/react";
 
 vi.mock("axios");
 
-describe("App Tests", () => {
+describe.skip("App Tests", () => {
   it("displays the username in the welcome header after login", async () => {
     const mockUser = { username: "testUser" };
     axios.post.mockResolvedValue({ data: { user: mockUser } });

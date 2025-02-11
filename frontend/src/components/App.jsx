@@ -260,8 +260,7 @@ const App = () => {
 
           <h2>Posts:</h2>
 
-          {/*
-          posts.map(
+          {posts.map(
             (post) =>
               Number(post.price) > Number(filter) &&
               (post.user_username == UFilter || UFilter == "") && (
@@ -272,7 +271,7 @@ const App = () => {
                   fetchPosts={fetchPosts}
                 />
               )
-          )*/}
+          )}
         </>
       ) : (
         <Login

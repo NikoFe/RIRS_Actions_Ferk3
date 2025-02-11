@@ -21,7 +21,7 @@ export default function Creation({
 
       <div className="create_rows">
         {rows.map((row, index) => (
-          <div className="row" key={row}>
+          <div className="row" key={row.key || index}>
             <input
               type="text"
               placeholder="Computer Part"

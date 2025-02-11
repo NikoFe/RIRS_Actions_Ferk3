@@ -11,7 +11,6 @@ on:
       - production
 
 jobs:
-  # Gradnja frontenda
   build-frontend:
     runs-on: ubuntu-latest
 
@@ -49,8 +48,6 @@ jobs:
           path: |
             frontend/
             frontend/build/
-
-  # Testiranje frontenda
   test-frontend:
     needs: build-frontend
     runs-on: ubuntu-latest
@@ -87,37 +84,3 @@ jobs:
         with:
           name: frontend-coverage
           path: frontend/coverage/
-
-  # Build and Push Docker Image
-  dockerize-frontend:
-    needs: test-frontend
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create Dockerfile
-        run: |
-          cat <<EOF > frontend/Dockerfile
-          FROM node:20-alpine AS build
-          WORKDIR /app
-          COPY package.json package-lock.json ./
-          RUN npm install
-          COPY . .
-          RUN npm run build
-
-          FROM nginx:alpine
-          COPY --from=build /app/build /usr/share/nginx/html
-          EXPOSE 80
-          CMD ["nginx", "-g", "daemon off;"]
-          EOF
-
-      - name: Login to Docker Hub
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest -f frontend/Dockerfile frontend
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest

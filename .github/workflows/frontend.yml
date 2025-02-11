@@ -104,6 +104,7 @@ jobs:
           WORKDIR /app
           COPY package.json package-lock.json ./
           RUN npm install
+          RUN echo "npm install completed"
           COPY . .
           RUN npm run build
 

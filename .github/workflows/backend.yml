@@ -1,0 +1,113 @@
+# Ime pipeline-a za backend
+name: Backend CI
+
+# Dogodki, ki sprožijo workflow (push in pull request na glavno vejo)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Job za gradnjo backenda
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code # Kloniranje repozitorija
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js # Namestitev Node.js okolja
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm" # Auto-caches
+
+      - name: Install dependencies # Namestitev odvisnosti
+        run: |
+          cd backend
+          npm install
+
+      - name: Upload backend artifacts # Naložitev artefaktov za backend
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build # Ime artefakta
+          path: |
+            backend/  
+            backend/node_modules/
+
+  # Job za testiranje backenda
+  test-backend:
+    needs: build-backend # Testiranje se izvede po uspešni gradnji
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code # Kloniranje repozitorija
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js # Namestitev Node.js okolja
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Cache node_modules # Caching odvisnosti
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules # Pot do mape node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }} # Ključ za cache
+          restore-keys: |
+            ${{ runner.os }}-backend-
+
+      - name: Install dependencies # Namestitev odvisnosti
+        run: |
+          cd backend
+          npm install
+
+      - name: Fix Jest Permissions
+        run: chmod +x backend/node_modules/.bin/jest
+
+      - name: Run tests with coverage # Izvajanje testov s pokritostjo
+        run: |
+          cd backend
+          npm run test:ci
+
+      - name: Upload coverage report # Naložitev poročila o pokritosti kode
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage # Ime artefakta
+          path: backend/coverage/ # Pot do poročila o pokritosti kode
+
+  # Build and Push Docker Image
+  dockerize-backend:
+    needs: test-backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Dockerfile
+        run: |
+          cat <<EOF > backend/Dockerfile
+          FROM node:20-alpine
+          WORKDIR /app
+          COPY backend/package.json backend/package-lock.json ./
+          RUN npm install
+          COPY backend/ .
+          EXPOSE 5000
+          CMD ["npm", "start"]
+          EOF
+
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest -f backend/Dockerfile backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+Key Changes:
+  Port Update: I've updated the Dockerfil

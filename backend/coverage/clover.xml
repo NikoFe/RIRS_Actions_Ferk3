@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1738869479609" clover="3.2.0">
-  <project timestamp="1738869479609" name="All files">
-    <metrics statements="88" coveredstatements="67" conditionals="18" coveredconditionals="14" methods="9" coveredmethods="7" elements="115" coveredelements="88" complexity="0" loc="88" ncloc="88" packages="2" files="3" classes="3"/>
+<coverage generated="1739354270318" clover="3.2.0">
+  <project timestamp="1739354270319" name="All files">
+    <metrics statements="94" coveredstatements="73" conditionals="18" coveredconditionals="14" methods="9" coveredmethods="7" elements="121" coveredelements="94" complexity="0" loc="94" ncloc="94" packages="2" files="3" classes="3"/>
     <package name="backend">
       <metrics statements="17" coveredstatements="15" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="1"/>
       <file name="app.js" path="C:\Users\nikof\Desktop\FERI\RIRS\RIRS_Actions_Ferk3\backend\app.js">
@@ -26,9 +26,9 @@
       </file>
     </package>
     <package name="backend.routes">
-      <metrics statements="71" coveredstatements="52" conditionals="14" coveredconditionals="11" methods="7" coveredmethods="6"/>
+      <metrics statements="77" coveredstatements="58" conditionals="14" coveredconditionals="11" methods="7" coveredmethods="6"/>
       <file name="posts.js" path="C:\Users\nikof\Desktop\FERI\RIRS\RIRS_Actions_Ferk3\backend\routes\posts.js">
-        <metrics statements="52" coveredstatements="41" conditionals="12" coveredconditionals="11" methods="5" coveredmethods="5"/>
+        <metrics statements="58" coveredstatements="47" conditionals="12" coveredconditionals="11" methods="5" coveredmethods="5"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -50,37 +50,43 @@
         <line num="37" count="2" type="stmt"/>
         <line num="38" count="2" type="stmt"/>
         <line num="39" count="2" type="stmt"/>
-        <line num="42" count="2" type="cond" truecount="6" falsecount="0"/>
-        <line num="43" count="1" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="43" count="2" type="cond" truecount="6" falsecount="0"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
         <line num="46" count="1" type="stmt"/>
         <line num="47" count="1" type="stmt"/>
-        <line num="51" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="52" count="0" type="stmt"/>
-        <line num="55" count="1" type="stmt"/>
-        <line num="57" count="0" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="57" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="58" count="0" type="stmt"/>
-        <line num="62" count="2" type="stmt"/>
-        <line num="63" count="2" type="stmt"/>
-        <line num="64" count="2" type="stmt"/>
-        <line num="65" count="2" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="68" count="2" type="stmt"/>
         <line num="69" count="2" type="stmt"/>
-        <line num="71" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="72" count="1" type="stmt"/>
-        <line num="75" count="1" type="stmt"/>
-        <line num="77" count="0" type="stmt"/>
-        <line num="78" count="0" type="stmt"/>
-        <line num="82" count="2" type="stmt"/>
-        <line num="83" count="2" type="stmt"/>
-        <line num="84" count="2" type="stmt"/>
-        <line num="85" count="2" type="stmt"/>
-        <line num="86" count="2" type="stmt"/>
-        <line num="87" count="2" type="stmt"/>
-        <line num="92" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="93" count="1" type="stmt"/>
-        <line num="96" count="1" type="stmt"/>
-        <line num="98" count="0" type="stmt"/>
-        <line num="99" count="0" type="stmt"/>
-        <line num="103" count="2" type="stmt"/>
+        <line num="70" count="2" type="stmt"/>
+        <line num="71" count="2" type="stmt"/>
+        <line num="75" count="2" type="stmt"/>
+        <line num="77" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="78" count="1" type="stmt"/>
+        <line num="81" count="1" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="88" count="2" type="stmt"/>
+        <line num="89" count="2" type="stmt"/>
+        <line num="90" count="2" type="stmt"/>
+        <line num="91" count="2" type="stmt"/>
+        <line num="92" count="2" type="stmt"/>
+        <line num="93" count="2" type="stmt"/>
+        <line num="98" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="99" count="1" type="stmt"/>
+        <line num="102" count="1" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="109" count="2" type="stmt"/>
       </file>
       <file name="users.js" path="C:\Users\nikof\Desktop\FERI\RIRS\RIRS_Actions_Ferk3\backend\routes\users.js">
         <metrics statements="19" coveredstatements="11" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="1"/>

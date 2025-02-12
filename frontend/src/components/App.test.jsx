@@ -1,13 +1,13 @@
-import { describe, test, expect, it, vi } from "vitest"; // ✅ Use Vitest functions explicitly
+import { describe, test, expect, it, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom"; // <-- ADD THIS LINE
+import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 //import "testing-library/jest-dom/vitest";
 import axios from "axios";
-import App from "./App"; // ✅ Make sure the import path is correct
+import App from "./App";
 import Login from "./Login";
 import Post from "./Post";
-import { loginUser } from "./testUtils"; // Import the login function
+import { loginUser } from "./testUtils";
 import Creation from "./Creation";
 import { within } from "@testing-library/react";
 
@@ -218,7 +218,6 @@ describe("App Tests", () => {
 
     axios.post.mockResolvedValue({ data: { user: mockUser } });
 
-    // Mock first GET request (initial data)
     axios.get.mockResolvedValueOnce({
       data: [
         {
@@ -231,7 +230,6 @@ describe("App Tests", () => {
       ],
     });
 
-    // Mock PUT request for updating data
     axios.put.mockResolvedValue({
       data: {
         name: "A1",
@@ -242,7 +240,6 @@ describe("App Tests", () => {
       },
     });
 
-    // Mock second GET request (fetching updated data)
     axios.get.mockResolvedValueOnce({
       data: [
         {
@@ -256,23 +253,18 @@ describe("App Tests", () => {
     });
 
     await loginUser();
-
-    // Mock prompt BEFORE clicking the update button
     window.prompt = vi
       .fn()
       .mockReturnValue(
         "Part: a11 Price: 50,Part: a12 Price: 70,Part: a13 Price: 30"
       );
 
-    // Click the update button (which triggers the prompt)
     await userEvent.click(screen.getByTestId("update_button"));
 
-    // Manually trigger the function that handles the prompt result
     await waitFor(() => {
       expect(window.prompt).toHaveBeenCalled();
     });
 
-    // Wait for the UI to update after the change
     await waitFor(() => {
       expect(screen.getByTestId("total_price_post")).toHaveTextContent(
         "Total price: 150.00"

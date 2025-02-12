@@ -86,7 +86,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
-          path: frontend/coverage/
+          path: |
+            frontend
+            frontend/coverage/
 
   # Build and Push Docker Image
   dockerize-frontend:

@@ -149,6 +149,7 @@ const App = () => {
 
   const getAverage = async () => {
     let calculated = 0.0;
+    let counted = 0;
 
     posts.forEach((post) => {
       if (post.user_username === selectedUser) {
@@ -163,17 +164,26 @@ const App = () => {
         });
 
         calculated += sum;
+        counted++;
       }
     });
     if (calculated == 0.0 && selectedUser != "") {
       setAverageError("Error user not found");
+      return -1;
     }
-    return calculated;
+    setAverageError("");
+
+    return calculated / counted;
   };
 
   const fetchAverage = async () => {
     let calculatedAverage = await getAverage(); // Await the promise
-    setUserAverage(calculatedAverage); // Set state with resolved value
+
+    if (calculatedAverage == -1) {
+      setUserAverage(0);
+    } else {
+      setUserAverage(calculatedAverage);
+    }
   };
 
   useEffect(() => {

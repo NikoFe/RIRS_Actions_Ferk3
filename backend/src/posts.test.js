@@ -173,7 +173,7 @@ describe("POSTS API", () => {
       );
     });
 
-    it("should return 404 if post is not found", async () => {
+    it("should return 404", async () => {
       const newData = {
         parts: "Part: a11 Price: 5,Part: a12 Price: 7,Part: a13 Price: 3,",
         price: "100.00",

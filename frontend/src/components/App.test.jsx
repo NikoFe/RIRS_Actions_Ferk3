@@ -41,7 +41,7 @@ describe("App Tests", () => {
     });
   });
 
-  it("renders login button and calls login function", async () => {
+  it("Check if posted by correct user", async () => {
     const mockHandleLogin = vi.fn();
     const mockSetLoginForm = vi.fn();
     const mockLoginForm = { username: "", password: "" };
@@ -95,7 +95,7 @@ describe("App Tests", () => {
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
   });
 
-  it("deleting a post removes it from the UI", async () => {
+  it("deleting a post", async () => {
     const mockPost = {
       name: "Test_Post",
       parts: "Engine: 100",
